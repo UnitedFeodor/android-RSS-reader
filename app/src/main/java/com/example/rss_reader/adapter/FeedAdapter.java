@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.example.rss_reader.R;
+import com.example.rss_reader.WebViewActivity;
 import com.example.rss_reader.interfaces.ItemClickListener;
 import com.example.rss_reader.model.RSSObject;
 
@@ -48,10 +50,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(@NonNull View view, int position, boolean isLongClick) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rssObject.getItems().get(position).getLink()));
-                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                view.getContext().startActivity(browserIntent);
-                System.out.println("onClick " + browserIntent);
+                String link = rssObject.getItems().get(position).getLink();
+                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                //browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //view.getContext().startActivity(browserIntent);
+
+
+                Intent webViewIntent = new Intent(view.getContext(), WebViewActivity.class);
+                webViewIntent.putExtra("URL",link);
+                webViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(webViewIntent);
+                //System.out.println("onClick " + browserIntent);
             }
         });
 
