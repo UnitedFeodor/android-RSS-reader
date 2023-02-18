@@ -3,6 +3,8 @@ package com.example.rss_reader
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -19,6 +21,7 @@ class WebViewActivity : AppCompatActivity() {
 
         toolbar = findViewById(R.id.toolbar)
         toolbar.setTitle("News")
+        setSupportActionBar(toolbar)
 
         webView = findViewById(R.id.webView)
         val intentUsed: Intent = intent
@@ -50,5 +53,18 @@ class WebViewActivity : AppCompatActivity() {
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.webview_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_go_back) {
+            finish()
+
+        }
+        return true
     }
 }
