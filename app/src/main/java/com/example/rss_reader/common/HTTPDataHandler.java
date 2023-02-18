@@ -1,6 +1,5 @@
 package com.example.rss_reader.common;
 
-import static com.google.gson.internal.bind.TypeAdapters.URL;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,25 +17,33 @@ public class HTTPDataHandler {
     }
 
     public String GetHTTPData(String urlString) {
+
         try {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null)
-                    sb.append(line);
-                stream = sb.toString();
-                urlConnection.disconnect();
+            try (AutoCloseable conc = () -> urlConnection.disconnect()) {
+                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                    try (InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                         BufferedReader r = new BufferedReader(new InputStreamReader(in))) {
+
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = r.readLine()) != null)
+                            sb.append(line);
+                        stream = sb.toString();
+                        //urlConnection.disconnect();
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         } catch(MalformedURLException e){
             throw new RuntimeException(e);
         } catch(IOException e){
             throw new RuntimeException(e);
         }
-        return stream; // TODO bad exception handling
+        return stream;
 
 
     }
