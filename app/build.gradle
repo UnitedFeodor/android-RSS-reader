@@ -50,6 +50,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.8.0")
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     implementation("androidx.cardview:cardview:1.0.0")
 
