@@ -22,7 +22,7 @@ public class HTTPDataHandler {
         try {
             URL url = new URL(urlString);
             HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
-            try (AutoCloseable conc = () -> urlConnection.disconnect()) {
+            try (AutoCloseable conc = urlConnection::disconnect) {
                 if (urlConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 
                     try (InputStream in = new BufferedInputStream(urlConnection.getInputStream());

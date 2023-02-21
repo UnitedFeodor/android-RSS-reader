@@ -20,7 +20,7 @@ class RssParser {
             parser.setInput(inputStream, null)
             var eventType = parser.eventType
             var foundItem = false
-            var linkFound = false;
+            var linkFound = false
             while (eventType != XmlPullParser.END_DOCUMENT) {
 
                 val tagname = parser.name
@@ -35,12 +35,12 @@ class RssParser {
                         // add item object to list
                         rssItem?.let { rssItems.add(it) }
                         foundItem = false
-                        linkFound = false;
+                        linkFound = false
                     } else if ( foundItem && tagname.equals("title", ignoreCase = true)) {
                         rssItem!!.title = text.toString()
                     } else if (!linkFound && foundItem && tagname.equals("link", ignoreCase = true)) {
                         rssItem!!.link = text.toString()
-                        linkFound = true;
+                        linkFound = true
                     } else if (foundItem && tagname.equals("pubDate", ignoreCase = true)) {
                         rssItem!!.pubDate = text.toString()
                     } else if (foundItem && tagname.equals("category", ignoreCase = true)) {

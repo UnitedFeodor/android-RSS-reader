@@ -1,7 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.rss_reader
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         toolbar = findViewById(R.id.toolbar)
-        toolbar.setTitle("News")
+        toolbar.title = "News"
 
         setSupportActionBar(toolbar)
         recyclerView = findViewById(R.id.recyclerView)
@@ -38,38 +40,40 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = linearLayoutManager
         loadRSS()
     }
-    fun loadRSS() {
-        var loadRSSAsync = object : AsyncTask<String, String, String>(){
+    private fun loadRSS() {
+        var loadRSSAsync =
+            @SuppressLint("StaticFieldLeak")
+            object : AsyncTask<String, String, String>(){
 
-            var mDialog: ProgressDialog = ProgressDialog(this@MainActivity)
+                var mDialog: ProgressDialog = ProgressDialog(this@MainActivity)
 
-            override fun onPreExecute() {
-                mDialog.setMessage("Please wait...")
-                mDialog.show()
+                override fun onPreExecute() {
+                    mDialog.setMessage("Please wait...")
+                    mDialog.show()
+                }
+
+                override fun doInBackground(vararg p0: String?): String? {
+
+
+                    var http = HTTPDataHandler()
+                    return http.GetHTTPData(p0[0])
+
+                }
+
+                override fun onPostExecute(result: String?) {
+                    mDialog.dismiss()
+                    //rssObject = Gson().fromJson(result,RSSObject::class.java) // TODO parse xml
+                    val parser = RssParser()
+                    val targetStream: InputStream = result!!.byteInputStream()
+
+                    rssObject = RSSObject(parser.parse(targetStream) as ArrayList<Item>?)
+
+                    var adapter = FeedAdapter(rssObject,baseContext)
+                    recyclerView.adapter = adapter
+                    adapter.notifyDataSetChanged()
+
+                }
             }
-
-            override fun doInBackground(vararg p0: String?): String? {
-
-
-                var http: HTTPDataHandler = HTTPDataHandler()
-                return http.GetHTTPData(p0[0])
-
-            }
-
-            override fun onPostExecute(result: String?) {
-                mDialog.dismiss()
-                //rssObject = Gson().fromJson(result,RSSObject::class.java) // TODO parse xml
-                val parser = RssParser()
-                val targetStream: InputStream = result!!.byteInputStream()
-
-                rssObject = RSSObject(parser.parse(targetStream) as ArrayList<Item>?)
-
-                var adapter: FeedAdapter = FeedAdapter(rssObject,baseContext)
-                recyclerView.adapter = adapter
-                adapter.notifyDataSetChanged()
-
-            }
-        }
         loadRSSAsync.execute(RSS_LINK)
     }
 

@@ -2,11 +2,9 @@ package com.example.rss_reader.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.example.rss_reader.R;
@@ -21,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
 
-    private RSSObject rssObject;
-    private Context mContext;
-    private LayoutInflater inflater;
+    private final RSSObject rssObject;
+    private final Context mContext;
+    private final LayoutInflater inflater;
 
     public FeedAdapter(RSSObject rssObject, Context mContext) {
         this.rssObject = rssObject;
@@ -47,21 +45,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
         // TODO maybe not here
 
-        holder.setItemClickListener(new ItemClickListener() {
-            @Override
-            public void onClick(@NonNull View view, int position, boolean isLongClick) {
-                String link = rssObject.getItems().get(position).getLink();
-                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                //browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //view.getContext().startActivity(browserIntent);
+        holder.setItemClickListener((view, position1, isLongClick) -> {
+            String link = rssObject.getItems().get(position1).getLink();
 
-
-                Intent webViewIntent = new Intent(view.getContext(), WebViewActivity.class);
-                webViewIntent.putExtra("URL",link);
-                webViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                view.getContext().startActivity(webViewIntent);
-                //System.out.println("onClick " + browserIntent);
-            }
+            Intent webViewIntent = new Intent(view.getContext(), WebViewActivity.class);
+            webViewIntent.putExtra("URL",link);
+            webViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            view.getContext().startActivity(webViewIntent);
         });
 
     }
@@ -72,6 +62,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         return rssObject.items.size();
     }
 
+    @SuppressWarnings("deprecation")
     class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView txtTitle, txtPubDate,txtContent;
@@ -80,9 +71,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         public FeedViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
-            txtPubDate = (TextView) itemView.findViewById(R.id.txtPubDate);
-            txtContent = (TextView) itemView.findViewById(R.id.txtContent);
+            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtPubDate = itemView.findViewById(R.id.txtPubDate);
+            txtContent = itemView.findViewById(R.id.txtContent);
 
             // set event
             itemView.setOnClickListener(this);
