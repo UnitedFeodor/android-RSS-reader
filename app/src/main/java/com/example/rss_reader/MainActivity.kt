@@ -2,16 +2,24 @@ package com.example.rss_reader
 
 import android.app.ProgressDialog
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rss_reader.adapter.FeedAdapter
 import com.example.rss_reader.common.HTTPDataHandler
+import com.example.rss_reader.model.Item
 import com.example.rss_reader.model.RSSObject
-import com.google.gson.Gson
+import com.example.rss_reader.model.RssParser
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
+import org.xmlpull.v1.XmlPullParserFactory
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.io.StringReader
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,17 +39,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         var linearLayoutManager = LinearLayoutManager(baseContext,LinearLayoutManager.VERTICAL,false)
         recyclerView.layoutManager = linearLayoutManager
-
-
         loadRSS()
-/*
-        runBlocking() {
-            var httpDataDeferred: Deferred<String> = async { loadRSS() }
-            var httpData = httpDataDeferred.await()
-            println("Email sent successfully.")
-            println("Finished")
-        }
-*/
     }
     fun loadRSS() {
         var loadRSSAsync = object : AsyncTask<String, String, String>(){
@@ -61,16 +59,19 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPostExecute(result: String?) {
                 mDialog.dismiss()
-                rssObject = Gson().fromJson(result,RSSObject::class.java)
+                //rssObject = Gson().fromJson(result,RSSObject::class.java) // TODO parse xml
+                val parser = RssParser()
+                val targetStream: InputStream = result!!.byteInputStream()
+
+                rssObject = RSSObject(parser.parse(targetStream) as ArrayList<Item>?)
+
                 var adapter: FeedAdapter = FeedAdapter(rssObject,baseContext)
                 recyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
 
             }
-
-
         }
-        loadRSSAsync.execute(RSS_JSON_API+RSS_LINK)
+        loadRSSAsync.execute(RSS_LINK)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -14,6 +14,9 @@ public class Item {
     public Enclosure enclosure;
     public ArrayList<String> categories;
 
+    public Item() {
+    }
+
     public Item(String title, String pubDate, String link, String guid, String author, String thumbnail, String description, String content, Enclosure enclosure, ArrayList<String> categories) {
 
         this.title = title;

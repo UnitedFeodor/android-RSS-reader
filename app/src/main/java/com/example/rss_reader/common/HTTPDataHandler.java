@@ -27,11 +27,13 @@ public class HTTPDataHandler {
                     try (InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                          BufferedReader r = new BufferedReader(new InputStreamReader(in))) {
 
+
                         StringBuilder sb = new StringBuilder();
                         String line;
                         while ((line = r.readLine()) != null)
                             sb.append(line);
                         stream = sb.toString();
+
                         //urlConnection.disconnect();
                     }
                 }

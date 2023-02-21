@@ -21,6 +21,15 @@ public class RSSObject{
         this.items = items;
     }
 
+    public RSSObject(Feed feed, ArrayList<Item> items) {
+        this.feed = feed;
+        this.items = items;
+    }
+
+    public RSSObject(ArrayList<Item> items) {
+        this.items = items;
+    }
+
     public String getStatus() {
         return status;
     }
