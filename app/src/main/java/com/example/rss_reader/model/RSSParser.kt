@@ -11,6 +11,8 @@ class RssParser {
     private var text: String? = null
     fun parse(inputStream: InputStream):List<Item> {
         try {
+
+
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
             val parser = factory.newPullParser()
@@ -18,23 +20,27 @@ class RssParser {
             parser.setInput(inputStream, null)
             var eventType = parser.eventType
             var foundItem = false
+            var linkFound = false;
             while (eventType != XmlPullParser.END_DOCUMENT) {
+
                 val tagname = parser.name
                 when (eventType) {
                     XmlPullParser.START_TAG -> if (tagname.equals("item", ignoreCase = true)) {
-                        // create a new instance of employee
+                        // create a new instance of item
                         foundItem = true
                         rssItem = Item()
                     }
                     XmlPullParser.TEXT -> text = parser.text
                     XmlPullParser.END_TAG -> if (tagname.equals("item", ignoreCase = true)) {
-                        // add employee object to list
+                        // add item object to list
                         rssItem?.let { rssItems.add(it) }
                         foundItem = false
+                        linkFound = false;
                     } else if ( foundItem && tagname.equals("title", ignoreCase = true)) {
                         rssItem!!.title = text.toString()
-                    } else if (foundItem && tagname.equals("link", ignoreCase = true)) {
+                    } else if (!linkFound && foundItem && tagname.equals("link", ignoreCase = true)) {
                         rssItem!!.link = text.toString()
+                        linkFound = true;
                     } else if (foundItem && tagname.equals("pubDate", ignoreCase = true)) {
                         rssItem!!.pubDate = text.toString()
                     } else if (foundItem && tagname.equals("category", ignoreCase = true)) {

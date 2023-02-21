@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_width = "match_parent"
         app:titleTextColor="@color/white"
+        app:subtitleTextColor="@color/white"
+
         />
 
     <WebView

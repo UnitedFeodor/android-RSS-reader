@@ -1,6 +1,7 @@
 package com.example.rss_reader
 
 import android.app.ProgressDialog
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
@@ -13,12 +14,7 @@ import com.example.rss_reader.common.HTTPDataHandler
 import com.example.rss_reader.model.Item
 import com.example.rss_reader.model.RSSObject
 import com.example.rss_reader.model.RssParser
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserException
-import org.xmlpull.v1.XmlPullParserFactory
-import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.io.StringReader
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,15 +22,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var recyclerView: RecyclerView
     private lateinit var rssObject: RSSObject
-
-    private val RSS_LINK = "http://rss.nytimes.com/services/xml/rss/nyt/Science.xml"
-    private val RSS_JSON_API = "https://api.rss2json.com/v1/api.json?rss_url="
+    // https://www.woman.ru/rss/
+    //   https://rss.nytimes.com/services/xml/rss/nyt/Science.xml
+    private val RSS_LINK = "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toolbar = findViewById(R.id.toolbar)
         toolbar.setTitle("News")
+
         setSupportActionBar(toolbar)
         recyclerView = findViewById(R.id.recyclerView)
         var linearLayoutManager = LinearLayoutManager(baseContext,LinearLayoutManager.VERTICAL,false)
@@ -51,10 +48,12 @@ class MainActivity : AppCompatActivity() {
                 mDialog.show()
             }
 
-            override fun doInBackground(vararg p0: String?): String {
+            override fun doInBackground(vararg p0: String?): String? {
+
+
                 var http: HTTPDataHandler = HTTPDataHandler()
-                var result: String = http.GetHTTPData(p0[0])
-                return result
+                return http.GetHTTPData(p0[0])
+
             }
 
             override fun onPostExecute(result: String?) {

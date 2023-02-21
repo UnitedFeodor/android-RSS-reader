@@ -12,7 +12,7 @@ public class Item {
     public String description;
     public String content;
     public Enclosure enclosure;
-    public ArrayList<String> categories;
+    public ArrayList<String> categories = new ArrayList<>();
 
     public Item() {
     }
